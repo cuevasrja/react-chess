@@ -10,15 +10,17 @@ const Tablero = ({size}) => {
     ];
 
     return(
-        <div id="tablero" style={{width: size, height: size, border: '1px solid black'}}>
-            {Array(rows).fill(0).map((row, i) => (
-                <tr style={{width: size, height: size / rows}}>
-                    {Array(cols).fill(0).map((col, j) => (
-                        <td style={{backgroundColor: colors[(i + j) % 2], width: size / cols, height: '100%'}}></td>
-                    ))}
-                </tr>
-            ))}
-        </div>
+        <table id="tablero" style={{width: size, height: size, border: '1px solid black', borderSpacing: 0}}>
+            <tbody>
+                {Array(rows).fill(0).map((row, i) => (
+                    <tr style={{width: size, height: size / rows}} key={i}>
+                        {Array(cols).fill(0).map((col, j) => (
+                            <td style={{backgroundColor: colors[(i + j) % 2], width: size / cols, height: '100%'}} key={i + "-" + j}></td>
+                        ))}
+                    </tr>
+                ))}
+            </tbody>
+        </table>
     )
 }
 
