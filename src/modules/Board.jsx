@@ -58,7 +58,7 @@ const Board = ({size}) => {
                                 style={{backgroundColor: colors[(i + j) % 2], width: size / cols, height: '100%', color: col.color === "white"? "blue" : "red", textAlign: 'center', fontSize: '80%', fontWeight: 'bold' }} 
                                 key={i + "-" + j}
                             >
-                                {col.name}
+                                {col === ""? "" : <img src={col.img} alt={col.name} style={{width: '70%', height: '70%'}}/>}
                             </td>
                         ))}
                     </tr>

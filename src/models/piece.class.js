@@ -6,6 +6,7 @@ export class Piece {
     moves = []
     active = true
     value = 0
+    img=""
 
     constructor(type, color, position) {
         this.type = type
@@ -15,5 +16,6 @@ export class Piece {
         this.moves = type.moves
         this.active = true
         this.value = type.value
+        this.img = `/src/assets/${type.name}_${color}.png`
     }
 }
