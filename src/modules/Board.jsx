@@ -1,64 +1,61 @@
-import React, { useState } from 'react'
-import { Piece } from '../models/piece.class';
-import { PIECES } from '../models/pieces.enum';
+import React, { useState } from "react"
+import PropTypes from "prop-types"
+import { Piece } from "../models/piece.class"
+import { PIECES } from "../models/pieces.enum"
 
 const rows = 8
 const cols = 8
 
-const initialBoard = Array(rows).fill(Array(cols).fill(''))
+const initialBoard = Array(rows).fill(Array(cols).fill(""))
 
 const initialTeam = (color) => {
-    const pawns = Array(cols).fill(0).map((col, i) => new Piece(PIECES.PAWN, color, {x: i, y: color === 'white' ? 6 : 1}))
-    const rooks = [new Piece(PIECES.ROOK, color, {x: 0, y: color === 'white' ? 7 : 0}), new Piece(PIECES.ROOK, color, {x: 7, y: color === 'white' ? 7 : 0})]
-    const knights = [new Piece(PIECES.KNIGHT, color, {x: 1, y: color === 'white' ? 7 : 0}), new Piece(PIECES.KNIGHT, color, {x: 6, y: color === 'white' ? 7 : 0})]
-    const bishops = [new Piece(PIECES.BISHOP, color, {x: 2, y: color === 'white' ? 7 : 0}), new Piece(PIECES.BISHOP, color, {x: 5, y: color === 'white' ? 7 : 0})]
-    const queen = [new Piece(PIECES.QUEEN, color, {x: 3, y: color === 'white' ? 7 : 0})]
-    const king = [new Piece(PIECES.KING, color, {x: 4, y: color === 'white' ? 7 : 0})]
+    const pawns = Array(cols).fill(0).map((col, i) => new Piece(PIECES.PAWN, color, { x: i, y: color === "white" ? 6 : 1 }))
+    const rooks = [new Piece(PIECES.ROOK, color, { x: 0, y: color === "white" ? 7 : 0 }), new Piece(PIECES.ROOK, color, { x: 7, y: color === "white" ? 7 : 0 })]
+    const knights = [new Piece(PIECES.KNIGHT, color, { x: 1, y: color === "white" ? 7 : 0 }), new Piece(PIECES.KNIGHT, color, { x: 6, y: color === "white" ? 7 : 0 })]
+    const bishops = [new Piece(PIECES.BISHOP, color, { x: 2, y: color === "white" ? 7 : 0 }), new Piece(PIECES.BISHOP, color, { x: 5, y: color === "white" ? 7 : 0 })]
+    const queen = [new Piece(PIECES.QUEEN, color, { x: 3, y: color === "white" ? 7 : 0 })]
+    const king = [new Piece(PIECES.KING, color, { x: 4, y: color === "white" ? 7 : 0 })]
 
     return [...pawns, ...rooks, ...knights, ...bishops, ...queen, ...king]
 }
 
-const organizeBoard = (pieces, board) =>{
+const organizeBoard = (pieces, board) => {
     return board.map((row, i) => row.map((col, j) => {
         const piece = pieces.find(piece => piece.position.x === j && piece.position.y === i)
-        if(piece){
+        if (piece && piece.active) {
             return piece
-        }else{
+        } else {
             return ""
         }
     }))
 }
 
-const Board = ({size}) => {
-    const [whiteTeam, setWhiteTeam] = useState(initialTeam('white'))
-    const [blackTeam, setBlackTeam] = useState(initialTeam('black'))
-    const [board, setBoard] = useState(initialBoard);
+const Board = ({ size }) => {
+    // eslint-disable-next-line no-unused-vars
+    const [whiteTeam, setWhiteTeam] = useState(initialTeam("white"))
+    // eslint-disable-next-line no-unused-vars
+    const [blackTeam, setBlackTeam] = useState(initialTeam("black"))
+    const [board, setBoard] = useState(initialBoard)
 
     console.table(board)
 
     const colors = [
-        '#ded7c5',
-        '#171717'
-    ];
+        "#ded7c5",
+        "#171717"
+    ]
 
-    if(board.every(row => row.every(cell => cell == ""))){ 
+    if (board.every(row => row.every(cell => cell === ""))) {
         setBoard(organizeBoard([...whiteTeam, ...blackTeam], board))
     }
 
-
-
-    return(
-        <table id="board" style={{width: size, height: size, border: '1px solid black', borderSpacing: 0}}>
+    return (
+        <table id="board" style={{ width: size, height: size, border: "1px solid black", borderSpacing: 0 }}>
             <tbody>
                 {board.map((row, i) => (
-                    <tr style={{width: size, height: size / rows}} key={i}>
+                    <tr style={{ width: size, height: size / rows }} key={i}>
                         {row.map((col, j) => (
-                            <td 
-                                className='cell' 
-                                style={{backgroundColor: colors[(i + j) % 2], width: size / cols, height: '100%', color: col.color === "white"? "blue" : "red", textAlign: 'center', fontSize: '80%', fontWeight: 'bold' }} 
-                                key={i + "-" + j}
-                            >
-                                {col === ""? "" : <img src={col.img} alt={col.name} style={{width: '70%', height: '70%'}}/>}
+                            <td className='cell' style={{ backgroundColor: colors[(i + j) % 2], width: size / cols, height: "100%" }} key={i + "-" + j} onClick={() => console.log(`Prueba ${i} ${j}`)}>
+                                {col === "" ? "" : <img src={col.img} alt={col.name} style={{ width: "70%", height: "70%" }}/>}
                             </td>
                         ))}
                     </tr>
@@ -66,6 +63,10 @@ const Board = ({size}) => {
             </tbody>
         </table>
     )
+}
+
+Board.propTypes = {
+    size: PropTypes.number
 }
 
 export default Board
