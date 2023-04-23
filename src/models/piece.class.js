@@ -5,6 +5,7 @@ export class Piece {
     position = { x: 0, y: 0 }
     moves = []
     active = true
+    show = false
     value = 0
     img = ""
 
@@ -15,6 +16,7 @@ export class Piece {
         this.position = position
         this.moves = type.moves
         this.active = true
+        this.show = false
         this.value = type.value
         this.img = `/src/assets/${type.name}_${color}.png`
     }
