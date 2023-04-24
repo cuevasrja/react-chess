@@ -25,7 +25,7 @@ export const organizeBoard = (pieces, board) => {
 }
 
 const possibleDestiny = (piece, board) => {
-    const { x, y } = piece.position
+    const { x, y } = piece?.position
     const possibleMoves = piece.moves
     const possibleDestination = possibleMoves.map(move => ({ x: x + move.x, y: y + move.y }))
     return possibleDestination.filter(position => {
@@ -43,7 +43,7 @@ const possibleDestiny = (piece, board) => {
 }
 
 const possiblePawnDestiny = (piece, board) => {
-    const { x, y } = piece.position
+    const { x, y } = piece?.position
     let possibleMoves = piece.moves
     if (y !== 1 && y !== 6) {
         possibleMoves.shift({ x: 0, y: 2 })
@@ -52,21 +52,25 @@ const possiblePawnDestiny = (piece, board) => {
         possibleMoves = possibleMoves.map(move => ({ x: move.x, y: -move.y }))
     }
     return possibleMoves.reduce((acc, move) => {
+        const p = board[y + move.y][x + move.x]
         if (move.x === 0) {
-            const p = board[y + move.y][x + move.x]
             if (!p) {
                 return acc.concat({ x: x + move.x, y: y + move.y })
             }
-            return acc
-        } else { //! Hay un error cuando seleccionas un peo y luego el de al lado, aparece una casilla en diagonal
-            const p = board[y + move.y][x + move.x]
-            if (p && p.color !== piece.color) {
+        } else {
+            if (p !== "" && p !== "X" && p?.color !== piece.color) {
                 return acc.concat({ x: x + move.x, y: y + move.y })
             }
-            return acc
         }
+        return acc
     }
     , [])
+}
+
+const cleanBoard = (board) => {
+    return board.map((row, i) => row.map((col, j) => {
+        return typeof col === "string" ? "" : { ...col, show: false }
+    }))
 }
 
 export const movePiece = (piece, position, board) => {
@@ -89,8 +93,12 @@ export const movePiece = (piece, position, board) => {
 }
 
 export const showPossibleMoves = (piece, board) => {
-    const possibleDestination = piece.name === PIECES.PAWN.name ? possiblePawnDestiny(piece, board) : possibleDestiny(piece, board)
-    const newBoard = board.map((row, i) => row.map((col, j) => {
+    const cleanedBoard = cleanBoard(board)
+    if (piece === "") {
+        return cleanedBoard
+    }
+    const possibleDestination = piece?.name === PIECES.PAWN.name ? possiblePawnDestiny(piece, cleanedBoard) : possibleDestiny(piece, cleanedBoard)
+    const newBoard = cleanedBoard.map((row, i) => row.map((col, j) => {
         if (possibleDestination.some(position => position.x === j && position.y === i)) {
             if (typeof col === "string") return "X"
             else {
