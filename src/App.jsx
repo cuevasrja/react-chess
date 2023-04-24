@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg"
 import viteLogo from "./assets/vite.svg"
 import "./App.css"
 import Board from "./modules/Board"
+import { SIZE } from "./models/board.enum"
 
 function App () {
     const [count, setCount] = useState(0)
@@ -29,7 +30,7 @@ function App () {
             <p className="read-the-docs">
                 Click on the Vite and React logos to learn more
             </p>
-            <Board size={500} ></Board>
+            <Board size={SIZE} ></Board>
         </div>
     )
 }

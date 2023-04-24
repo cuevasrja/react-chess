@@ -7,3 +7,5 @@ export const COLORS = [
 ]
 
 export const SHOW_COLOR = "#d1bb17"
+
+export const SIZE = 500

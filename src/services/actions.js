@@ -43,7 +43,7 @@ const possibleDestiny = (piece, board) => {
 }
 
 const possiblePawnDestiny = (piece, board) => {
-    const { x, y } = piece?.position
+    const { x, y } = piece.position
     let possibleMoves = piece.moves
     if (y !== 1 && y !== 6) {
         possibleMoves.shift({ x: 0, y: 2 })
@@ -68,28 +68,23 @@ const possiblePawnDestiny = (piece, board) => {
 }
 
 const cleanBoard = (board) => {
-    return board.map((row, i) => row.map((col, j) => {
+    return board.map(row => row.map(col => {
         return typeof col === "string" ? "" : { ...col, show: false }
     }))
 }
 
-export const movePiece = (piece, position, board) => {
-    const { x, y } = piece.position
-    const possibleDestination = piece.name === PIECES.PAWN.name ? possiblePawnDestiny(piece, board) : possibleDestiny(piece, board)
-    if (possibleDestination.includes(position)) {
-        const newBoard = board.map((row, i) => row.map((col, j) => {
-            if (i === position.y && j === position.x) {
-                return piece
-            } else if (i === y && j === x) {
-                return ""
-            } else {
-                return col
-            }
-        }))
+export const movePiece = (piece, movement, board) => { // ! Error moviendo los peones
+    const { x, y } = movement
+    const newBoard = cleanBoard(board)
+    const possibleDestination = piece?.name === PIECES.PAWN.name ? possiblePawnDestiny(piece, newBoard) : possibleDestiny(piece, newBoard)
+    if (!possibleDestination.some(position => position.x === x && position.y === y)) {
+        console.log("Invalid movement")
         return newBoard
     }
-    console.log("Movimiento no permitido")
-    return board
+    const newPiece = { ...piece, position: { x, y } }
+    newBoard[y][x] = newPiece
+    newBoard[piece.position.y][piece.position.x] = ""
+    return newBoard
 }
 
 export const showPossibleMoves = (piece, board) => {
