@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import { INITIAL_BOARD } from "../models/board.enum"
 import { initialTeam, movePiece, organizeBoard, showPossibleMoves } from "../services/actions"
@@ -29,12 +29,10 @@ const Game = ({ size, setCheck, whitePoints, setWhitePoints, blackPoints, setBla
     }
     const checkGameOver = (bPoints, wPoints) => {
         if (bPoints >= 39 || wPoints >= 39) {
-            console.log("Game Over")
             setCheck(false)
         }
     }
     const modifyBoard = (i, j) => {
-        checkGameOver(blackPoints, whitePoints)
         const piece = board[i][j]
         if (piece === "X" || piece.show) {
             setBoard(movePiece(selected, { x: j, y: i }, board))
@@ -48,6 +46,10 @@ const Game = ({ size, setCheck, whitePoints, setWhitePoints, blackPoints, setBla
             }
         }
     }
+
+    useEffect(() => {
+        checkGameOver(blackPoints, whitePoints)
+    }, [blackPoints, whitePoints])
 
     return (
         <>
