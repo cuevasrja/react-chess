@@ -9,3 +9,5 @@ export const COLORS = [
 export const SHOW_COLOR = "#d1bb17"
 
 export const SIZE = 500
+
+export const INITIAL_BOARD = Array(ROWS).fill(Array(COLS).fill(""))
