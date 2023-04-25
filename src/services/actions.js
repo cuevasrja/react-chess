@@ -24,9 +24,33 @@ export const organizeBoard = (pieces, board) => {
     }))
 }
 
+const longMoves = (piece, board) => {
+    const { x, y } = piece.position
+    const moves = piece.moves
+    const possibleMoves = []
+    moves.forEach(move => {
+        let i = 1
+        while (i < COLS && board[y + (move.y * i)]?.[x + (move.x * i)] !== undefined) {
+            const p = board[y + (move.y * i)]?.[x + (move.x * i)]
+            if (p && p.color === piece.color) {
+                break
+            } else if (p && p.color !== piece.color) {
+                possibleMoves.push({ x: (move.x * i), y: (move.y * i) })
+                break
+            } else {
+                possibleMoves.push({ x: (move.x * i), y: (move.y * i) })
+            }
+            i++
+        }
+    })
+    return possibleMoves
+}
+
 const possibleDestiny = (piece, board) => {
     const { x, y } = piece?.position
-    const possibleMoves = piece.moves
+    const possibleMoves = piece.name === "king" || piece.name === "knight"
+        ? piece.moves
+        : longMoves(piece, board)
     const possibleDestination = possibleMoves.map(move => ({ x: x + move.x, y: y + move.y }))
     return possibleDestination.filter(position => {
         const { x, y } = position
@@ -44,25 +68,35 @@ const possibleDestiny = (piece, board) => {
 
 const possiblePawnDestiny = (piece, board) => {
     const { x, y } = piece.position
-    let possibleMoves = piece.moves
-    if (y !== 1 && y !== 6) {
-        possibleMoves.shift({ x: 0, y: 2 })
-    }
-    if (piece.color === "white") {
-        possibleMoves = possibleMoves.map(move => ({ x: move.x, y: -move.y }))
-    }
+    const possibleMoves = piece.moves
     return possibleMoves.reduce((acc, move) => {
-        const p = board[y + move.y][x + move.x]
-        if (move.x === 0) {
-            if (!p) {
-                return acc.concat({ x: x + move.x, y: y + move.y })
+        if (piece.color === "white") {
+            const p = board[y - move.y]?.[x + move.x]
+            if (p?.color === piece.color) {
+                return acc
+            } else if (move.x !== 0 && typeof p === "string") {
+                return acc
+            } else if (move.y === 2 && y !== 6) {
+                return acc
+            } else if (move.x === 0 && typeof p !== "string") {
+                return acc
+            } else {
+                return [...acc, { x: x + move.x, y: y - move.y }]
             }
         } else {
-            if (p !== "" && p !== "X" && p?.color !== piece.color) {
-                return acc.concat({ x: x + move.x, y: y + move.y })
+            const p = board[y + move.y]?.[x + move.x]
+            if (p?.color === piece.color) {
+                return acc
+            } else if (move.x !== 0 && typeof p === "string") {
+                return acc
+            } else if (move.y === 2 && y !== 1) {
+                return acc
+            } else if (move.x === 0 && typeof p !== "string") {
+                return acc
+            } else {
+                return [...acc, { x: x + move.x, y: y + move.y }]
             }
         }
-        return acc
     }
     , [])
 }
@@ -73,10 +107,12 @@ const cleanBoard = (board) => {
     }))
 }
 
-export const movePiece = (piece, movement, board) => { // ! Error moviendo los peones
+export const movePiece = (piece, movement, board) => {
     const { x, y } = movement
     const newBoard = cleanBoard(board)
-    const possibleDestination = piece?.name === PIECES.PAWN.name ? possiblePawnDestiny(piece, newBoard) : possibleDestiny(piece, newBoard)
+    const possibleDestination = piece?.name === PIECES.PAWN.name
+        ? possiblePawnDestiny(piece, newBoard)
+        : possibleDestiny(piece, newBoard)
     if (!possibleDestination.some(position => position.x === x && position.y === y)) {
         console.log("Invalid movement")
         return newBoard

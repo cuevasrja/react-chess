@@ -58,8 +58,8 @@ const Board = ({ size }) => {
 
     return (
         <>
-            <h1 style={{ textAlign: "center" }}>Turn: {turn}</h1>
-            <h2 style={{ textAlign: "center" }}>Black: {blackPoints} - White: {whitePoints}</h2>
+            <h1>Turn: {turn}</h1>
+            <h2>Black: {blackPoints} - White: {whitePoints}</h2>
             <table id="board" style={{ width: size, height: size, border: "1px solid black", borderSpacing: 0 }}>
                 <tbody>
                     {board.map((row, i) => (
