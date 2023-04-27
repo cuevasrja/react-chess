@@ -28,7 +28,8 @@
 }
 
 #board {
-    border: "1px solid black";
+    box-shadow: #2a2a2a -10px 10px 20px 0px;
+    border: 1px solid black;
     border-spacing: 0
 }
 

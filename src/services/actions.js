@@ -16,11 +16,7 @@ export const initialTeam = (color) => {
 export const organizeBoard = (pieces, board) => {
     return board.map((row, i) => row.map((col, j) => {
         const piece = pieces.find(piece => piece.position.x === j && piece.position.y === i)
-        if (piece && piece.active) {
-            return piece
-        } else {
-            return ""
-        }
+        return piece?.active ? piece : ""
     }))
 }
 
