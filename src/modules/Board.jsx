@@ -1,6 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
-import { COLORS, COLS, ROWS, SHOW_COLOR } from "../models/board.enum"
+import { COLORS, COLS, ROWS } from "../models/board.enum"
+import Piece from "./Piece"
 
 const Board = ({ size, board, modifyBoard }) => {
     const trStyle = {
@@ -13,13 +14,13 @@ const Board = ({ size, board, modifyBoard }) => {
     }
     return (
         <div>
-            <table id="board" style={{ width: size, height: size, border: "1px solid black", borderSpacing: 0 }}>
+            <table id="board" style={{ width: size, height: size }}>
                 <tbody>
                     {board.map((row, i) => (
                         <tr style={trStyle} key={i}>
                             {row.map((col, j) => (
-                                <td className='cell' style={{ backgroundColor: col === "X" || col.show ? SHOW_COLOR : COLORS[(i + j) % 2], ...tdStyles }} key={i + "-" + j} onClick={() => modifyBoard(i, j)}>
-                                    {typeof col === "string" ? "" : <img src={col.img} alt={col.name} style={{ width: "70%", height: "70%" }} />}
+                                <td className={"cell"} style={{ backgroundColor: COLORS[(i + j) % 2], ...tdStyles }} key={i + "-" + j} onClick={() => modifyBoard(i, j)}>
+                                    <Piece piece={col} ></Piece>
                                 </td>
                             ))}
                         </tr>

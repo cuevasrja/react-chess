@@ -117,6 +117,9 @@ export const movePiece = (piece, movement, board) => {
         console.log("Invalid movement")
         return newBoard
     }
+    if (piece?.name === PIECES.PAWN.name && (y === 0 || y === 7)) {
+        piece = new Piece(PIECES.QUEEN, piece.color, piece.position)
+    }
     const newPiece = { ...piece, position: { x, y } }
     newBoard[y][x] = newPiece
     newBoard[piece.position.y][piece.position.x] = ""
