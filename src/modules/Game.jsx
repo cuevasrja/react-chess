@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
-import { INITIAL_BOARD } from "../models/board.enum"
+import { BLACK, INITIAL_BOARD, SHOW, WHITE } from "../models/board.enum"
 import { initialTeam, movePiece, organizeBoard, showPossibleMoves } from "../services/actions"
 import Board from "./Board"
 import Score from "./Score"
 
-const initialBoard = organizeBoard([...initialTeam("white"), ...initialTeam("black")], INITIAL_BOARD)
+const initialBoard = organizeBoard([...initialTeam(WHITE), ...initialTeam(BLACK)], INITIAL_BOARD)
 
 const Game = ({ size, setCheck, whitePoints, setWhitePoints, blackPoints, setBlackPoints }) => {
     const [board, setBoard] = useState(initialBoard)
     const [selected, setSelected] = useState(null)
-    const [turn, setTurn] = useState("white")
+    const [turn, setTurn] = useState(WHITE)
     const swapTurn = () => {
-        if (turn === "white") {
-            setTurn("black")
+        if (turn === WHITE) {
+            setTurn(BLACK)
         } else {
-            setTurn("white")
+            setTurn(WHITE)
         }
     }
     const addPoints = (piece) => {
         if (typeof piece === "object") {
-            if (piece.color === "black") {
+            if (piece.color === BLACK) {
                 setWhitePoints(whitePoints + piece.value)
             } else {
                 setBlackPoints(blackPoints + piece.value)
@@ -28,13 +28,13 @@ const Game = ({ size, setCheck, whitePoints, setWhitePoints, blackPoints, setBla
         }
     }
     const checkGameOver = (bPoints, wPoints) => {
-        if (bPoints >= 39 || wPoints >= 39) {
+        if (bPoints >= 40 || wPoints >= 40) {
             setCheck(false)
         }
     }
     const modifyBoard = (i, j) => {
         const piece = board[i][j]
-        if (piece === "X" || piece.show) {
+        if (piece === SHOW || piece.show) {
             setBoard(movePiece(selected, { x: j, y: i }, board))
             addPoints(piece)
             swapTurn()

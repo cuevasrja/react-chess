@@ -1,14 +1,14 @@
-import { COLS } from "../models/board.enum"
+import { COLS, EMPTY, SHOW, WHITE } from "../models/board.enum"
 import { Piece } from "../models/piece.class"
 import { PIECES } from "../models/pieces.enum"
 
 export const initialTeam = (color) => {
-    const pawns = Array(COLS).fill(0).map((col, i) => new Piece(PIECES.PAWN, color, { x: i, y: color === "white" ? 6 : 1 }))
-    const rooks = [new Piece(PIECES.ROOK, color, { x: 0, y: color === "white" ? 7 : 0 }), new Piece(PIECES.ROOK, color, { x: 7, y: color === "white" ? 7 : 0 })]
-    const knights = [new Piece(PIECES.KNIGHT, color, { x: 1, y: color === "white" ? 7 : 0 }), new Piece(PIECES.KNIGHT, color, { x: 6, y: color === "white" ? 7 : 0 })]
-    const bishops = [new Piece(PIECES.BISHOP, color, { x: 2, y: color === "white" ? 7 : 0 }), new Piece(PIECES.BISHOP, color, { x: 5, y: color === "white" ? 7 : 0 })]
-    const queen = [new Piece(PIECES.QUEEN, color, { x: 3, y: color === "white" ? 7 : 0 })]
-    const king = [new Piece(PIECES.KING, color, { x: 4, y: color === "white" ? 7 : 0 })]
+    const pawns = Array(COLS).fill(0).map((col, i) => new Piece(PIECES.PAWN, color, { x: i, y: color === WHITE ? 6 : 1 }))
+    const rooks = [new Piece(PIECES.ROOK, color, { x: 0, y: color === WHITE ? 7 : 0 }), new Piece(PIECES.ROOK, color, { x: 7, y: color === WHITE ? 7 : 0 })]
+    const knights = [new Piece(PIECES.KNIGHT, color, { x: 1, y: color === WHITE ? 7 : 0 }), new Piece(PIECES.KNIGHT, color, { x: 6, y: color === WHITE ? 7 : 0 })]
+    const bishops = [new Piece(PIECES.BISHOP, color, { x: 2, y: color === WHITE ? 7 : 0 }), new Piece(PIECES.BISHOP, color, { x: 5, y: color === WHITE ? 7 : 0 })]
+    const queen = [new Piece(PIECES.QUEEN, color, { x: 3, y: color === WHITE ? 7 : 0 })]
+    const king = [new Piece(PIECES.KING, color, { x: 4, y: color === WHITE ? 7 : 0 })]
 
     return [...pawns, ...rooks, ...knights, ...bishops, ...queen, ...king]
 }
@@ -16,7 +16,7 @@ export const initialTeam = (color) => {
 export const organizeBoard = (pieces, board) => {
     return board.map((row, i) => row.map((col, j) => {
         const piece = pieces.find(piece => piece.position.x === j && piece.position.y === i)
-        return piece?.active ? piece : ""
+        return piece?.active ? piece : EMPTY
     }))
 }
 
@@ -44,7 +44,7 @@ const longMoves = (piece, board) => {
 
 const possibleDestiny = (piece, board) => {
     const { x, y } = piece?.position
-    const possibleMoves = piece.name === "king" || piece.name === "knight"
+    const possibleMoves = piece.name === PIECES.KING.name || piece.name === PIECES.KNIGHT.name
         ? piece.moves
         : longMoves(piece, board)
     const possibleDestination = possibleMoves.map(move => ({ x: x + move.x, y: y + move.y }))
@@ -66,7 +66,7 @@ const possiblePawnDestiny = (piece, board) => {
     const { x, y } = piece.position
     const possibleMoves = piece.moves
     return possibleMoves.reduce((acc, move) => {
-        if (piece.color === "white") {
+        if (piece.color === WHITE) {
             const p = board[y - move.y]?.[x + move.x]
             if (p?.color === piece.color) {
                 return acc
@@ -99,7 +99,7 @@ const possiblePawnDestiny = (piece, board) => {
 
 const cleanBoard = (board) => {
     return board.map(row => row.map(col => {
-        return typeof col === "string" ? "" : { ...col, show: false }
+        return typeof col === "string" ? EMPTY : { ...col, show: false }
     }))
 }
 
@@ -118,25 +118,25 @@ export const movePiece = (piece, movement, board) => {
     }
     const newPiece = { ...piece, position: { x, y } }
     newBoard[y][x] = newPiece
-    newBoard[piece.position.y][piece.position.x] = ""
+    newBoard[piece.position.y][piece.position.x] = EMPTY
     return newBoard
 }
 
 export const showPossibleMoves = (piece, board) => {
     const cleanedBoard = cleanBoard(board)
-    if (piece === "") {
+    if (piece === EMPTY) {
         return cleanedBoard
     }
     const possibleDestination = piece?.name === PIECES.PAWN.name ? possiblePawnDestiny(piece, cleanedBoard) : possibleDestiny(piece, cleanedBoard)
     const newBoard = cleanedBoard.map((row, i) => row.map((col, j) => {
         if (possibleDestination.some(position => position.x === j && position.y === i)) {
-            if (typeof col === "string") return "X"
+            if (typeof col === "string") return SHOW
             else {
                 col.show = true
                 return col
             }
         }
-        if (typeof col === "string") return ""
+        if (typeof col === "string") return EMPTY
         else {
             col.show = false
             return col
