@@ -4,7 +4,7 @@ import Game from "./modules/Game"
 import { SIZE } from "./models/board.enum"
 import GameOver from "./modules/GameOver"
 
-function App () {
+function App() {
     const [check, setCheck] = useState(true)
     const [blackPoints, setBlackPoints] = useState(0)
     const [whitePoints, setWhitePoints] = useState(0)

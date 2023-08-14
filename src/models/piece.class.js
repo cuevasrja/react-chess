@@ -4,12 +4,12 @@ export class Piece {
     color = ""
     position = { x: 0, y: 0 }
     moves = []
-    active = true
+    moved = false
     show = false
     value = 0
     img = ""
 
-    constructor (type, color, position) {
+    constructor(type, color, position) {
         this.type = type
         this.name = type.name
         this.color = color
