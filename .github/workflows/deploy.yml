@@ -39,13 +39,12 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload dist repository
-          path: './dist'
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: build
+          clean: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
