@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import PropTypes from "prop-types"
 import { BLACK, INITIAL_BOARD, SHOW, WHITE } from "../models/board.enum"
-import { initialTeam, movePiece, organizeBoard, showPossibleMoves } from "../services/actions"
+import { initialTeam, movePiece, organizeBoard, pointsGived, showPossibleMoves } from "../services/actions"
 import Board from "./Board"
 import Score from "./Score"
 
@@ -18,12 +18,12 @@ const Game = ({ size, setCheck, whitePoints, setWhitePoints, blackPoints, setBla
             setTurn(WHITE)
         }
     }
-    const addPoints = (piece) => {
+    const addPoints = (piece, points) => {
         if (typeof piece === "object") {
-            if (piece.color === BLACK) {
-                setWhitePoints(whitePoints + piece.value)
+            if (piece.color === WHITE) {
+                setWhitePoints(whitePoints + points)
             } else {
-                setBlackPoints(blackPoints + piece.value)
+                setBlackPoints(blackPoints + points)
             }
         }
     }
@@ -35,8 +35,9 @@ const Game = ({ size, setCheck, whitePoints, setWhitePoints, blackPoints, setBla
     const modifyBoard = (i, j) => {
         const piece = board[i][j]
         if (piece === SHOW || piece.show) {
+            const points = pointsGived(selected, { x: j, y: i }, board)
             setBoard(movePiece(selected, { x: j, y: i }, board))
-            addPoints(piece)
+            addPoints(selected, points)
             swapTurn()
             setSelected(null)
         } else {
