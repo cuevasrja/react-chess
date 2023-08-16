@@ -45,6 +45,8 @@ jobs:
         run: cp -r ./public/* ./dist
       - name: Commit files
         run: |
+          git config --local user.email "juanandrescuevas14@gmail.com"
+          git config --local user.name "Juan Cuevas"
           git add .
           git commit -m "Deploy to GitHub Pages"
       - name: Push changes
