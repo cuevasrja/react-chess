@@ -18,6 +18,6 @@ export class Piece {
         this.active = true
         this.show = false
         this.value = type.value
-        this.img = `/pieces/${type.name}_${color}.png`
+        this.img = `pieces/${type.name}_${color}.png`
     }
 }
